@@ -38,6 +38,7 @@ dependencies:
   bluesky: ^0.18.8
   atproto: ^0.13.3
   bluesky_text: ^0.7.2
+  provider: ^6.1.2
 
 dev_dependencies:
   flutter_test:

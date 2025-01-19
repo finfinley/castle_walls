@@ -1,8 +1,13 @@
 import 'package:castle_walls/features/login/login.dart';
+import 'package:castle_walls/providers/bluesky_provider.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(
+    ChangeNotifierProvider(
+        create: (context) => BlueskyProvider(), child: MyApp()),
+  );
 }
 
 class MyApp extends StatefulWidget {

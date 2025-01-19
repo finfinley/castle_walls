@@ -1,10 +1,11 @@
 import 'dart:async';
 
+import 'package:castle_walls/providers/bluesky_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:atproto/atproto.dart' as atp;
 import 'package:bluesky/bluesky.dart' as bsky;
-import 'package:bluesky_text/bluesky_text.dart';
+import 'package:provider/provider.dart';
 
 class LoginPage extends StatefulWidget {
   @override
@@ -19,21 +20,9 @@ class _LoginPageState extends State<LoginPage> {
   Future<void> _login() async {
     try {
       final session = await atp.createSession(
-          identifier: 'alexfin@outlook.com', password: 'Epcot.1982');
+          identifier: _usernameController.value.text,
+          password: _passwordController.value.text);
       final bluesky = bsky.Bluesky.fromSession(session.data);
-
-      final text = BlueskyText('🦉');
-
-      final facets = await text.entities.toFacets();
-
-      final strongRef = await bluesky.feed.post(
-          text: text.value, facets: facets.map(bsky.Facet.fromJson).toList());
-
-      print('Posted: ${strongRef.data.uri}');
-
-      await bluesky.atproto.repo.deleteRecord(uri: strongRef.data.uri);
-
-      print('Deleted Record.');
     } catch (e) {
       print('Login failed: $e');
     }
@@ -61,16 +50,9 @@ class _LoginPageState extends State<LoginPage> {
               mainAxisSize: MainAxisSize.min,
               children: [
                 AnimatedTextColor(),
-                // Text(
-                //   'Enter the Castle',
-                //   style: GoogleFonts.metalMania(
-                //     fontSize: 40,
-                //     fontWeight: FontWeight.bold,
-                //   ),
-                //   textAlign: TextAlign.center,
-                // ),
                 SizedBox(height: 16),
                 TextField(
+                  controller: _usernameController,
                   decoration: InputDecoration(
                     labelText: 'Username',
                     labelStyle: GoogleFonts.pressStart2p(),
@@ -78,6 +60,7 @@ class _LoginPageState extends State<LoginPage> {
                 ),
                 SizedBox(height: 8),
                 TextField(
+                  controller: _passwordController,
                   decoration: InputDecoration(
                     labelText: 'Password',
                     labelStyle: GoogleFonts.pressStart2p(),
@@ -85,7 +68,14 @@ class _LoginPageState extends State<LoginPage> {
                   obscureText: true,
                 ),
                 SizedBox(height: 16),
-                RetroButton(onPressed: _login, text: 'Login')
+                RetroButton(
+                    onPressed: () async {
+                      final provider =
+                          Provider.of<BlueskyProvider>(context, listen: false);
+                      await provider.login(_usernameController.value.text,
+                          _passwordController.value.text);
+                    },
+                    text: 'Login')
               ],
             ),
           ),
@@ -163,14 +153,27 @@ class _AnimatedTextColorState extends State<AnimatedTextColor> {
   }
 
   @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    // _isLoggedIn = Provider.of<BlueskyProvider>(context).isLoggedIn;
+  }
+
+  @override
   Widget build(BuildContext context) {
+    final bsky = Provider.of<BlueskyProvider>(context);
+    final isLoggedIn = bsky.isLoggedIn;
+    final user = bsky.user;
+
     return AnimatedDefaultTextStyle(
       duration: Duration(seconds: 3),
       style: GoogleFonts.metalMania(
         color: _colors[_currentColorIndex],
-        fontSize: 40,
+        fontSize: 32,
       ),
-      child: Text(_text),
+      child: Text(
+        isLoggedIn ? "Welcome to the Castle, ${user!.email}." : _text,
+        textAlign: TextAlign.center,
+      ),
     );
   }
 }
