@@ -3,6 +3,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:bluesky/bluesky.dart' as bsky;
 
 class LoginPage extends StatefulWidget {
   @override
@@ -13,6 +14,11 @@ class _LoginPageState extends State<LoginPage> {
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _usernameController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
+
+  Future<void> _login() async {
+  final blueSky = bsky.Bluesky.anonymous();
+  log(blueSky.toString());
+}
 
   @override
   Widget build(BuildContext context) {
@@ -60,7 +66,7 @@ class _LoginPageState extends State<LoginPage> {
                   obscureText: true,
                 ),
                 SizedBox(height: 16),
-                RetroButton(onPressed: () => log('Logging in'), text: 'Login')
+                RetroButton(onPressed: _login, text: 'Login')
               ],
             ),
           ),
