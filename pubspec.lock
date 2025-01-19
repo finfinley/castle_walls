@@ -26,7 +26,7 @@ packages:
     source: hosted
     version: "0.4.0"
   atproto:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: atproto
       sha256: "0f3d342c4d629e9994d58dbadd4281074641ac75a18cd514b212a3b15f86019e"
@@ -65,6 +65,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.18.8"
+  bluesky_text:
+    dependency: "direct main"
+    description:
+      name: bluesky_text
+      sha256: a10835d17e9cfc1739ea09a5c6fc86c287aa59074c60961601f7a0cf663b1ed4
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.7.2"
   boolean_selector:
     dependency: transitive
     description:
@@ -145,14 +153,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.0.1"
-  english_words:
-    dependency: "direct main"
-    description:
-      name: english_words
-      sha256: "6a7ef6473a97bd8571b6b641d006a6e58a7c67e65fb6f3d6d1151cb46b0e983c"
-      url: "https://pub.dev"
-    source: hosted
-    version: "4.0.0"
   fake_async:
     dependency: transitive
     description:
@@ -331,14 +331,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.0.0"
-  nested:
-    dependency: transitive
-    description:
-      name: nested
-      sha256: "03bac4c528c64c95c722ec99280375a6f2fc708eec17c7b3f07253b626cd2a20"
-      url: "https://pub.dev"
-    source: hosted
-    version: "1.0.0"
   nsid:
     dependency: transitive
     description:
@@ -427,14 +419,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "3.9.1"
-  provider:
-    dependency: "direct main"
-    description:
-      name: provider
-      sha256: c8a055ee5ce3fd98d6fc872478b03823ffdb448699c6ebdbbc71d59b596fd48c
-      url: "https://pub.dev"
-    source: hosted
-    version: "6.1.2"
   sky_engine:
     dependency: transitive
     description: flutter

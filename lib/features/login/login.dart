@@ -1,9 +1,10 @@
-import 'dart:developer';
 import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:atproto/atproto.dart' as atp;
 import 'package:bluesky/bluesky.dart' as bsky;
+import 'package:bluesky_text/bluesky_text.dart';
 
 class LoginPage extends StatefulWidget {
   @override
@@ -16,9 +17,27 @@ class _LoginPageState extends State<LoginPage> {
   final TextEditingController _passwordController = TextEditingController();
 
   Future<void> _login() async {
-  final blueSky = bsky.Bluesky.anonymous();
-  log(blueSky.toString());
-}
+    try {
+      final session = await atp.createSession(
+          identifier: 'alexfin@outlook.com', password: 'Epcot.1982');
+      final bluesky = bsky.Bluesky.fromSession(session.data);
+
+      final text = BlueskyText('🦉');
+
+      final facets = await text.entities.toFacets();
+
+      final strongRef = await bluesky.feed.post(
+          text: text.value, facets: facets.map(bsky.Facet.fromJson).toList());
+
+      print('Posted: ${strongRef.data.uri}');
+
+      await bluesky.atproto.repo.deleteRecord(uri: strongRef.data.uri);
+
+      print('Deleted Record.');
+    } catch (e) {
+      print('Login failed: $e');
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -111,7 +130,13 @@ class AnimatedTextColor extends StatefulWidget {
 }
 
 class _AnimatedTextColorState extends State<AnimatedTextColor> {
-  final List<Color> _colors = [Colors.red, Colors.blue, Colors.green, Colors.orange, Colors.purple];
+  final List<Color> _colors = [
+    Colors.red,
+    Colors.blue,
+    Colors.green,
+    Colors.orange,
+    Colors.purple
+  ];
   int _currentColorIndex = 0;
   late Timer _timer;
   final String _text = 'Enter the Castle';
