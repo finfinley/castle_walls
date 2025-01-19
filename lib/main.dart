@@ -1,4 +1,4 @@
-import 'package:castle_walls/src/login.dart';
+import 'package:castle_walls/features/login/login.dart';
 import 'package:english_words/english_words.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
