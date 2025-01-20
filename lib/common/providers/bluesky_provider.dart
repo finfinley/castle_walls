@@ -58,20 +58,19 @@ class BlueskyProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> fetchTimeline() async {
+  Future<void> fetchFeed() async {
     try {
       setLoading(true);
       final uri = AtUri(
           'at://did:plc:bwdcpnl2rvlpr2ixlsnzx64s/app.bsky.feed.generator/aaadetmzvhdbw');
-      print(uri);
       final response = await bsky!.feed.getFeed(generatorUri: uri, limit: 1);
-
-      print(response.data.feed.every((FeedView feed) {
-        print(feed.post.record.facets);
-        return true;
-      }));
+      final embed = response.data.feed.firstOrNull!.toJson()['post']['embed'];
+      final List<String> imageUrls = embed['images']
+          .map<String>((image) => image['fullsize'] as String)
+          .toList();
+      print(imageUrls);
     } catch (e) {
-      print('Failed to fetch timeline: $e');
+      print('Failed to fetch feed: $e');
     }
     setLoading(false);
   }

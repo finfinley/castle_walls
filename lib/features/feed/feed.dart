@@ -59,7 +59,7 @@ class Post extends StatelessWidget {
                   onPressed: () async {
                     final provider =
                         Provider.of<BlueskyProvider>(context, listen: false);
-                    await provider.fetchTimeline();
+                    await provider.fetchFeed();
                   },
                   text: 'Go Further',
                   size: fontSize,
