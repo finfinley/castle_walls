@@ -57,4 +57,22 @@ class BlueskyProvider extends ChangeNotifier {
 
     notifyListeners();
   }
+
+  Future<void> fetchTimeline() async {
+    try {
+      setLoading(true);
+      final uri = AtUri(
+          'at://did:plc:bwdcpnl2rvlpr2ixlsnzx64s/app.bsky.feed.generator/aaadetmzvhdbw');
+      print(uri);
+      final response = await bsky!.feed.getFeed(generatorUri: uri, limit: 1);
+
+      print(response.data.feed.every((FeedView feed) {
+        print(feed.post.record.facets);
+        return true;
+      }));
+    } catch (e) {
+      print('Failed to fetch timeline: $e');
+    }
+    setLoading(false);
+  }
 }

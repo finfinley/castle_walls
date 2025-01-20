@@ -31,6 +31,7 @@ class FeedPage extends StatelessWidget {
 }
 
 class Post extends StatelessWidget {
+  final double fontSize = 20;
   const Post({
     super.key,
   });
@@ -51,13 +52,29 @@ class Post extends StatelessWidget {
           children: [
             AnimatedTextColor(text: 'Welcome to the Castle'),
             SizedBox(height: 16),
-            RetroButton(
-                onPressed: () async {
-                  final provider =
-                      Provider.of<BlueskyProvider>(context, listen: false);
-                  await provider.logout();
-                },
-                text: 'Leave'),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                RetroButton(
+                  onPressed: () async {
+                    final provider =
+                        Provider.of<BlueskyProvider>(context, listen: false);
+                    await provider.fetchTimeline();
+                  },
+                  text: 'Go Further',
+                  size: fontSize,
+                ),
+                RetroButton(
+                  onPressed: () async {
+                    final provider =
+                        Provider.of<BlueskyProvider>(context, listen: false);
+                    await provider.logout();
+                  },
+                  text: 'Leave',
+                  size: fontSize,
+                ),
+              ],
+            ),
           ],
         ),
       ),

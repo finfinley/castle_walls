@@ -49,6 +49,7 @@ class _LoginPageState extends State<LoginPage> {
                       labelText: 'Username',
                       labelStyle: GoogleFonts.pressStart2p(),
                     ),
+                    style: GoogleFonts.spaceMono(),
                   ),
                   SizedBox(height: 8),
                   TextField(
@@ -58,6 +59,7 @@ class _LoginPageState extends State<LoginPage> {
                       labelStyle: GoogleFonts.pressStart2p(),
                     ),
                     obscureText: true,
+                    style: GoogleFonts.spaceMono(),
                   ),
                   SizedBox(height: 16),
                   !bsky.isLoading

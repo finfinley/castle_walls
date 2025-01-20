@@ -5,9 +5,10 @@ class RetroButton extends StatelessWidget {
   final VoidCallback onPressed;
   final String text;
   final bool isEnabled;
+  final double size;
 
   RetroButton(
-      {required this.onPressed, required this.text, this.isEnabled = true});
+      {required this.onPressed, required this.text, this.isEnabled = true, this.size = 28});
 
   @override
   Widget build(BuildContext context) {
@@ -25,7 +26,7 @@ class RetroButton extends StatelessWidget {
                 text,
                 style: GoogleFonts.metalMania(
                   color: Colors.white,
-                  fontSize: 28,
+                  fontSize: size,
                 ),
               )
             : CircularProgressIndicator(),
