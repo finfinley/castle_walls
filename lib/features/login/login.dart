@@ -60,13 +60,20 @@ class _LoginPageState extends State<LoginPage> {
                     obscureText: true,
                   ),
                   SizedBox(height: 16),
-                  RetroButton(
-                      onPressed: () async {
-                        await bsky.login(_usernameController.value.text,
-                            _passwordController.value.text);
-                      },
-                      isEnabled: !bsky.isLoading,
-                      text: 'Login'),
+                  !bsky.isLoading
+                      ? RetroButton(
+                          onPressed: () async {
+                            await bsky.login(_usernameController.value.text,
+                                _passwordController.value.text);
+                          },
+                          isEnabled: !bsky.isLoading,
+                          text: 'Login')
+                      : Image.asset(
+                          'assets/loading_sword.gif',
+                          width: 50, // Adjust the width as needed
+                          height: 50, // Adjust the height as needed
+                          fit: BoxFit.cover,
+                        ),
                 ],
               );
             }),

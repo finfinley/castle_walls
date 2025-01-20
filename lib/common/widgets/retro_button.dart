@@ -20,13 +20,15 @@ class RetroButton extends StatelessWidget {
           border: Border.all(color: Colors.white, width: 4),
           borderRadius: BorderRadius.circular(0),
         ),
-        child: Text(
-          text,
-          style: GoogleFonts.metalMania(
-            color: isEnabled ? Colors.white : Colors.black38,
-            fontSize: 28,
-          ),
-        ),
+        child: isEnabled
+            ? Text(
+                text,
+                style: GoogleFonts.metalMania(
+                  color: Colors.white,
+                  fontSize: 28,
+                ),
+              )
+            : CircularProgressIndicator(),
       ),
     );
   }
