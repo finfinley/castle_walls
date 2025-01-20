@@ -1,10 +1,10 @@
 import 'dart:async';
 
-import 'package:castle_walls/providers/bluesky_provider.dart';
+import 'package:castle_walls/common/providers/bluesky_provider.dart';
+import 'package:castle_walls/common/widgets/animated_text_color.dart';
+import 'package:castle_walls/common/widgets/retro_button.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:atproto/atproto.dart' as atp;
-import 'package:bluesky/bluesky.dart' as bsky;
 import 'package:provider/provider.dart';
 
 class LoginPage extends StatefulWidget {
@@ -17,19 +17,9 @@ class _LoginPageState extends State<LoginPage> {
   final TextEditingController _usernameController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
 
-  Future<void> _login() async {
-    try {
-      final session = await atp.createSession(
-          identifier: _usernameController.value.text,
-          password: _passwordController.value.text);
-      final bluesky = bsky.Bluesky.fromSession(session.data);
-    } catch (e) {
-      print('Login failed: $e');
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
+    final bsky = Provider.of<BlueskyProvider>(context);
     return Scaffold(
       body: Container(
         decoration: BoxDecoration(
@@ -49,7 +39,9 @@ class _LoginPageState extends State<LoginPage> {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                AnimatedTextColor(),
+                AnimatedTextColor(
+                  text: 'Enter the Castle',
+                ),
                 SizedBox(height: 16),
                 TextField(
                   controller: _usernameController,
@@ -70,109 +62,15 @@ class _LoginPageState extends State<LoginPage> {
                 SizedBox(height: 16),
                 RetroButton(
                     onPressed: () async {
-                      final provider =
-                          Provider.of<BlueskyProvider>(context, listen: false);
-                      await provider.login(_usernameController.value.text,
+                      await bsky.login(_usernameController.value.text,
                           _passwordController.value.text);
                     },
+                    isEnabled: !bsky.isLoading,
                     text: 'Login')
               ],
             ),
           ),
         ),
-      ),
-    );
-  }
-}
-
-class RetroButton extends StatelessWidget {
-  final VoidCallback onPressed;
-  final String text;
-
-  RetroButton({required this.onPressed, required this.text});
-
-  @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: onPressed,
-      child: Container(
-        padding: EdgeInsets.symmetric(vertical: 12, horizontal: 24),
-        decoration: BoxDecoration(
-          color: Colors.black,
-          border: Border.all(color: Colors.white, width: 4),
-          borderRadius: BorderRadius.circular(0),
-        ),
-        child: Text(
-          text,
-          style: GoogleFonts.metalMania(
-            color: Colors.white,
-            fontSize: 28,
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-class AnimatedTextColor extends StatefulWidget {
-  @override
-  State<AnimatedTextColor> createState() => _AnimatedTextColorState();
-}
-
-class _AnimatedTextColorState extends State<AnimatedTextColor> {
-  final List<Color> _colors = [
-    Colors.red,
-    Colors.blue,
-    Colors.green,
-    Colors.orange,
-    Colors.purple
-  ];
-  int _currentColorIndex = 0;
-  late Timer _timer;
-  final String _text = 'Enter the Castle';
-  // final String _text;
-
-  @override
-  void initState() {
-    super.initState();
-    _startColorChange();
-  }
-
-  @override
-  void dispose() {
-    _timer.cancel();
-    super.dispose();
-  }
-
-  void _startColorChange() {
-    _timer = Timer.periodic(Duration(seconds: 4), (timer) {
-      setState(() {
-        _currentColorIndex = (_currentColorIndex + 1) % _colors.length;
-      });
-    });
-  }
-
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    // _isLoggedIn = Provider.of<BlueskyProvider>(context).isLoggedIn;
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final bsky = Provider.of<BlueskyProvider>(context);
-    final isLoggedIn = bsky.isLoggedIn;
-    final user = bsky.user;
-
-    return AnimatedDefaultTextStyle(
-      duration: Duration(seconds: 3),
-      style: GoogleFonts.metalMania(
-        color: _colors[_currentColorIndex],
-        fontSize: 32,
-      ),
-      child: Text(
-        isLoggedIn ? "Welcome to the Castle, ${user!.email}." : _text,
-        textAlign: TextAlign.center,
       ),
     );
   }
