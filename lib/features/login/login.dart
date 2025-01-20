@@ -19,7 +19,6 @@ class _LoginPageState extends State<LoginPage> {
 
   @override
   Widget build(BuildContext context) {
-    final bsky = Provider.of<BlueskyProvider>(context);
     return Scaffold(
       body: Container(
         decoration: BoxDecoration(
@@ -36,39 +35,41 @@ class _LoginPageState extends State<LoginPage> {
               color: Colors.white,
               borderRadius: BorderRadius.circular(8),
             ),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                AnimatedTextColor(
-                  text: 'Enter the Castle',
-                ),
-                SizedBox(height: 16),
-                TextField(
-                  controller: _usernameController,
-                  decoration: InputDecoration(
-                    labelText: 'Username',
-                    labelStyle: GoogleFonts.pressStart2p(),
+            child: Consumer<BlueskyProvider>(builder: (context, bsky, child) {
+              return Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  AnimatedTextColor(
+                    text: 'Enter the Castle',
                   ),
-                ),
-                SizedBox(height: 8),
-                TextField(
-                  controller: _passwordController,
-                  decoration: InputDecoration(
-                    labelText: 'Password',
-                    labelStyle: GoogleFonts.pressStart2p(),
+                  SizedBox(height: 16),
+                  TextField(
+                    controller: _usernameController,
+                    decoration: InputDecoration(
+                      labelText: 'Username',
+                      labelStyle: GoogleFonts.pressStart2p(),
+                    ),
                   ),
-                  obscureText: true,
-                ),
-                SizedBox(height: 16),
-                RetroButton(
-                    onPressed: () async {
-                      await bsky.login(_usernameController.value.text,
-                          _passwordController.value.text);
-                    },
-                    isEnabled: !bsky.isLoading,
-                    text: 'Login')
-              ],
-            ),
+                  SizedBox(height: 8),
+                  TextField(
+                    controller: _passwordController,
+                    decoration: InputDecoration(
+                      labelText: 'Password',
+                      labelStyle: GoogleFonts.pressStart2p(),
+                    ),
+                    obscureText: true,
+                  ),
+                  SizedBox(height: 16),
+                  RetroButton(
+                      onPressed: () async {
+                        await bsky.login(_usernameController.value.text,
+                            _passwordController.value.text);
+                      },
+                      isEnabled: !bsky.isLoading,
+                      text: 'Login'),
+                ],
+              );
+            }),
           ),
         ),
       ),

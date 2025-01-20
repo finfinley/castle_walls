@@ -17,17 +17,27 @@ class BlueskyProvider extends ChangeNotifier {
   bool get isLoading => _isLoading;
   bool get isLoggedIn => _isLoggedIn;
 
+  void setLoggedIn(bool value) {
+    _isLoggedIn = value;
+    notifyListeners();
+  }
+
+  void setLoading(bool value) {
+    _isLoading = value;
+    notifyListeners();
+  }
+
   Future<void> login(String username, String password) async {
     try {
-      _isLoading = true;
+      setLoading(true);
       _session = await atp.createSession(
         identifier: username,
         password: password,
       );
       if (session != null) {
         _bsky = Bluesky.fromSession(session!.data);
-        _isLoggedIn = true;
         _user = User.fromSessionData(session!.data);
+        setLoggedIn(true);
 
         notifyListeners();
         print(session!.data);
@@ -36,7 +46,7 @@ class BlueskyProvider extends ChangeNotifier {
     } catch (e) {
       print('Login failed: $e');
     }
-    _isLoading = false;
+    setLoading(false);
   }
 
   Future<void> logout() async {

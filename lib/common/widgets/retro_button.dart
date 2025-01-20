@@ -11,7 +11,6 @@ class RetroButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    print(isEnabled);
     return GestureDetector(
       onTap: isEnabled ? onPressed : null,
       child: Container(
