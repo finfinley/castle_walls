@@ -1,10 +1,6 @@
-import 'dart:math';
-
 import 'package:castle_walls/common/providers/bluesky_provider.dart';
-import 'package:castle_walls/common/widgets/animated_text_color.dart';
 import 'package:castle_walls/common/widgets/retro_button.dart';
 import 'package:flutter/material.dart';
-import 'package:logger/logger.dart';
 import 'package:provider/provider.dart';
 
 class FeedPage extends StatelessWidget {
