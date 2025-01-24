@@ -45,8 +45,7 @@ class BlueskyProvider extends ChangeNotifier {
         setLoggedIn(true);
 
         notifyListeners();
-        print(session!.data);
-        print('Logged in!');
+        logger.i('Logged in as ${user!.handle}');
         fetchFeed();
       }
     } catch (e) {
@@ -66,10 +65,11 @@ class BlueskyProvider extends ChangeNotifier {
 
   Future<void> fetchFeed() async {
     try {
+      setLoading(true);
       _feed.clear();
       final uri = AtUri(
           'at://did:plc:bwdcpnl2rvlpr2ixlsnzx64s/app.bsky.feed.generator/aaadetmzvhdbw');
-      final response = await bsky!.feed.getFeed(generatorUri: uri, limit: 10);
+      final response = await bsky!.feed.getFeed(generatorUri: uri, limit: 5);
 
       final embedsImg = response.data.feed
           .map((feed) =>
@@ -85,5 +85,6 @@ class BlueskyProvider extends ChangeNotifier {
     } catch (e) {
       logger.e('Failed to fetch feed: $e');
     }
+    setLoading(false);
   }
 }
