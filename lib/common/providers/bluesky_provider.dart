@@ -1,19 +1,24 @@
 import 'package:atproto/atproto.dart' as atp;
 import 'package:atproto/core.dart';
 import 'package:bluesky/bluesky.dart';
+import 'package:castle_walls/data_objects/bluesky_image_post.dart';
 import 'package:castle_walls/data_objects/user.dart';
 import 'package:flutter/material.dart';
+import 'package:logger/logger.dart';
 
 class BlueskyProvider extends ChangeNotifier {
+  var logger = Logger(printer: PrettyPrinter());
   Bluesky? _bsky;
   User? _user;
   XRPCResponse<Session>? _session;
+  List<BskyImagePost> _feed = [];
   bool _isLoggedIn = false;
   bool _isLoading = false;
 
   Bluesky? get bsky => _bsky;
   User? get user => _user;
   XRPCResponse<Session>? get session => _session;
+  List<BskyImagePost> get feed => _feed;
   bool get isLoading => _isLoading;
   bool get isLoggedIn => _isLoggedIn;
 
@@ -42,6 +47,7 @@ class BlueskyProvider extends ChangeNotifier {
         notifyListeners();
         print(session!.data);
         print('Logged in!');
+        fetchFeed();
       }
     } catch (e) {
       print('Login failed: $e');
@@ -60,18 +66,24 @@ class BlueskyProvider extends ChangeNotifier {
 
   Future<void> fetchFeed() async {
     try {
-      setLoading(true);
+      _feed.clear();
       final uri = AtUri(
           'at://did:plc:bwdcpnl2rvlpr2ixlsnzx64s/app.bsky.feed.generator/aaadetmzvhdbw');
-      final response = await bsky!.feed.getFeed(generatorUri: uri, limit: 1);
-      final embed = response.data.feed.firstOrNull!.toJson()['post']['embed'];
-      final List<String> imageUrls = embed['images']
-          .map<String>((image) => image['fullsize'] as String)
+      final response = await bsky!.feed.getFeed(generatorUri: uri, limit: 10);
+
+      final embedsImg = response.data.feed
+          .map((feed) =>
+              feed.toJson()['post']['embed']['images'] as List<dynamic>)
           .toList();
-      print(imageUrls);
+
+      for (var embed in embedsImg) {
+        final images = embed
+            .map((image) => BskyImage.fromJson(image as Map<String, dynamic>))
+            .toList();
+        _feed.add(BskyImagePost(images: images));
+      }
     } catch (e) {
-      print('Failed to fetch feed: $e');
+      logger.e('Failed to fetch feed: $e');
     }
-    setLoading(false);
   }
 }
