@@ -1,5 +1,6 @@
 import 'package:castle_walls/common/providers/bluesky_provider.dart';
 import 'package:castle_walls/common/widgets/animated_text_color.dart';
+import 'package:castle_walls/common/widgets/frame.dart';
 import 'package:castle_walls/common/widgets/loading_splash.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -69,7 +70,7 @@ class _FeedPageState extends State<FeedPage> {
                   return Column(
                     children: bsky.feed
                         .map((imageUrl) =>
-                            Post(imageUrl: imageUrl.images[0].url))
+                            FramedPost(imageUrl: imageUrl.images[0].url))
                         .toList(),
                   );
                 }
@@ -95,9 +96,9 @@ class Post extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.all(32),
       child: Container(
-        padding: EdgeInsets.all(16),
+        padding: EdgeInsets.all(0),
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: Color.fromRGBO(250, 197, 103, 1.0),
           borderRadius: BorderRadius.circular(8),
         ),
         child: Column(
