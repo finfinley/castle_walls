@@ -1,6 +1,6 @@
 import 'package:castle_walls/common/providers/bluesky_provider.dart';
+import 'package:castle_walls/common/widgets/animated_text_color.dart';
 import 'package:castle_walls/common/widgets/loading_splash.dart';
-import 'package:castle_walls/common/widgets/retro_button.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:logger/logger.dart';
@@ -23,6 +23,10 @@ class _FeedPageState extends State<FeedPage> {
 
   @override
   Widget build(BuildContext context) {
+    var textStyle = TextStyle(
+          fontFamily: GoogleFonts.metalMania().fontFamily,
+          fontSize: 16,
+        );
     return Scaffold(
       bottomNavigationBar: BottomNavigationBar(
         backgroundColor: Colors.white70,
@@ -38,14 +42,8 @@ class _FeedPageState extends State<FeedPage> {
         ],
         selectedItemColor: Colors.grey[900],
         unselectedItemColor: Colors.red[900],
-        selectedLabelStyle: TextStyle(
-          fontFamily: GoogleFonts.metalMania().fontFamily,
-          fontSize: 16,
-        ),
-        unselectedLabelStyle: TextStyle(
-          fontFamily: GoogleFonts.metalMania().fontFamily,
-          fontSize: 16,
-        ),
+        selectedLabelStyle: textStyle,
+        unselectedLabelStyle: textStyle,
         onTap: (value) => value == 0
             ? Provider.of<BlueskyProvider>(context, listen: false).fetchFeed()
             : Provider.of<BlueskyProvider>(context, listen: false).logout(),
@@ -65,13 +63,7 @@ class _FeedPageState extends State<FeedPage> {
                   return LoadingSplash();
                 } else if (bsky.feed.isEmpty) {
                   return Center(
-                    child: Text(
-                      'No posts to show',
-                      style: TextStyle(
-                        fontSize: 24,
-                        color: Colors.white,
-                      ),
-                    ),
+                    child: AnimatedTextColor(text: 'No Posts to Show'),
                   );
                 } else {
                   return Column(
@@ -101,9 +93,8 @@ class Post extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.all(16),
+      padding: const EdgeInsets.all(32),
       child: Container(
-        width: 500,
         padding: EdgeInsets.all(16),
         decoration: BoxDecoration(
           color: Colors.white,
