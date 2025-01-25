@@ -3,6 +3,18 @@ import 'package:castle_walls/features/login/login.dart';
 import 'package:castle_walls/common/providers/bluesky_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:go_router/go_router.dart';
+
+// GoRouter configuration
+final _router = GoRouter(
+  routes: [
+    GoRoute(
+      path: '/',
+      builder: (context, state) =>
+          Provider.of<BlueskyProvider>(context).isLoggedIn ? FeedPage() : LoginPage(),
+    ),
+  ],
+);
 
 void main() {
   runApp(
@@ -29,7 +41,7 @@ class _MyAppState extends State<MyApp> {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return MaterialApp.router(
       title: 'Castle Walls',
       theme: ThemeData(
         // This is the theme of your application.
@@ -50,11 +62,7 @@ class _MyAppState extends State<MyApp> {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      home: Consumer<BlueskyProvider>(
-        builder: (context, provider, child) {
-          return provider.isLoggedIn ? FeedPage() : LoginPage();
-        },
-      ),
+      routerConfig: _router,
     );
   }
 }

@@ -2,6 +2,7 @@ import 'package:castle_walls/common/providers/bluesky_provider.dart';
 import 'package:castle_walls/common/widgets/loading_splash.dart';
 import 'package:castle_walls/common/widgets/retro_button.dart';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:logger/logger.dart';
 import 'package:provider/provider.dart';
 
@@ -23,6 +24,32 @@ class _FeedPageState extends State<FeedPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      bottomNavigationBar: BottomNavigationBar(
+        backgroundColor: Colors.white70,
+        items: const <BottomNavigationBarItem>[
+          BottomNavigationBarItem(
+            icon: Icon(Icons.arrow_upward),
+            label: 'Further',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.dangerous),
+            label: 'Leave',
+          ),
+        ],
+        selectedItemColor: Colors.grey[900],
+        unselectedItemColor: Colors.red[900],
+        selectedLabelStyle: TextStyle(
+          fontFamily: GoogleFonts.metalMania().fontFamily,
+          fontSize: 16,
+        ),
+        unselectedLabelStyle: TextStyle(
+          fontFamily: GoogleFonts.metalMania().fontFamily,
+          fontSize: 16,
+        ),
+        onTap: (value) => value == 0
+            ? Provider.of<BlueskyProvider>(context, listen: false).fetchFeed()
+            : Provider.of<BlueskyProvider>(context, listen: false).logout(),
+      ),
       body: Container(
         decoration: BoxDecoration(
           image: DecorationImage(
@@ -31,33 +58,30 @@ class _FeedPageState extends State<FeedPage> {
           ),
         ),
         child: Center(
-          child: Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: SingleChildScrollView(
-              child: Consumer<BlueskyProvider>(
-                builder: (context, bsky, child) {
-                  if (bsky.isLoading) {
-                    return LoadingSplash();
-                  } else if (bsky.feed.isEmpty) {
-                    return Center(
-                      child: Text(
-                        'No posts to show',
-                        style: TextStyle(
-                          fontSize: 24,
-                          color: Colors.white,
-                        ),
+          child: SingleChildScrollView(
+            child: Consumer<BlueskyProvider>(
+              builder: (context, bsky, child) {
+                if (bsky.isLoading) {
+                  return LoadingSplash();
+                } else if (bsky.feed.isEmpty) {
+                  return Center(
+                    child: Text(
+                      'No posts to show',
+                      style: TextStyle(
+                        fontSize: 24,
+                        color: Colors.white,
                       ),
-                    );
-                  } else {
-                    return Column(
-                      children: bsky.feed
-                          .map((imageUrl) =>
-                              Post(imageUrl: imageUrl.images[0].url))
-                          .toList(),
-                    );
-                  }
-                },
-              ),
+                    ),
+                  );
+                } else {
+                  return Column(
+                    children: bsky.feed
+                        .map((imageUrl) =>
+                            Post(imageUrl: imageUrl.images[0].url))
+                        .toList(),
+                  );
+                }
+              },
             ),
           ),
         ),
@@ -77,7 +101,7 @@ class Post extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.all(8.0),
+      padding: const EdgeInsets.all(16),
       child: Container(
         width: 500,
         padding: EdgeInsets.all(16),
@@ -110,28 +134,6 @@ class Post extends StatelessWidget {
                       }, // Use BoxFit.cover if you want the image to cover the entire area
                     ),
                   ),
-                ),
-                Consumer<BlueskyProvider>(
-                  builder: (context, bsky, child) {
-                    return Column(
-                      children: [
-                        RetroButton(
-                          onPressed: () async {
-                            await bsky.fetchFeed();
-                          },
-                          text: 'Go Further',
-                          size: fontSize,
-                        ),
-                        RetroButton(
-                          onPressed: () async {
-                            await bsky.logout();
-                          },
-                          text: 'Leave',
-                          size: fontSize,
-                        ),
-                      ],
-                    );
-                  },
                 ),
               ],
             ),
